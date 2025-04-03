@@ -1,0 +1,39 @@
+server:
+  servlet.context-path: /or-gs
+  port: ${SERVER_PORT:8089}
+
+spring:
+  datasource:
+    driverClassName: org.postgersql.Driver
+    url: jdbc:postgresql://db:5432/gs
+    username: gs
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate.ddl-auto: validate
+    # show-sql: true
+    # properties.hibernate.format_sql: true
+  database-platform: org.hibernate.dialect.PostgreSQL16Dialect
+
+
+app:
+  kafka:
+    enabled: true
+    bootstrapAddress: ${KAFKA_BOOTSTRAP_ADDRESS:http://localhost:9091}
+    groupId: orchestrator-goods-storage
+  agreement-service.type: mock
+
+
+agreement-service:
+  host: http://localhost:9001
+  method:
+    get-currencies: /create-agreement
+  timeout: 2000 #ms
+
+
+logging:
+  level:
+    org.hibernate:
+      SQL: TRACE
+      type: INFO
+      orm.jdbc.bind: INFO
