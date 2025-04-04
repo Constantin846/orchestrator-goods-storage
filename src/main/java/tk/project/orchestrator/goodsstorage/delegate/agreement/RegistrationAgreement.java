@@ -1,4 +1,4 @@
-package tk.project.orchestrator.goodsstorage.delegate;
+package tk.project.orchestrator.goodsstorage.delegate.agreement;
 
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;

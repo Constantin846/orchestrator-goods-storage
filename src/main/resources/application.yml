@@ -17,19 +17,49 @@ spring:
 
 
 app:
+  orchestrator-id: 123
   kafka:
     enabled: true
     bootstrapAddress: ${KAFKA_BOOTSTRAP_ADDRESS:http://localhost:9091}
     groupId: orchestrator-goods-storage
   agreement-service.type: mock
+  delivery-service.type: mock
+  notification-service.type: mock
+  payment-service.type: mock
+  product-service.type: no-mock
 
 
 agreement-service:
   host: http://localhost:9001
   method:
-    get-currencies: /create-agreement
+    create-agreement: /agreement
+    delete-agreement: /agreement
   timeout: 2000 #ms
 
+delivery-service:
+  host: http://localhost:9002
+  method:
+    create: /delivery
+    delete: /delivery/delete
+  timeout: 2000 #ms
+
+notification-service:
+  host: http://localhost:9003
+  method:
+    send-message: /send-message
+  timeout: 2000 #ms
+
+payment-service:
+  host: http://localhost:9004
+  method:
+    pay-for-order: /pay-for-order
+  timeout: 2000 #ms
+
+product-service:
+  host: http://localhost:8080
+  method:
+    set-status: /gs/order/set-status
+  timeout: 2000 #ms
 
 logging:
   level:

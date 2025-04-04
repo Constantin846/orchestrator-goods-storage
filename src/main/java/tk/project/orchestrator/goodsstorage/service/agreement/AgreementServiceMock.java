@@ -16,4 +16,8 @@ public class AgreementServiceMock implements AgreementService {
         int number = Objects.hash(agreementData.getInn(), agreementData.getAccountNumber());
         return Integer.toString(number);
     }
+
+    @Override
+    public void sendRequestDeleteAgreement(String agreementId) {
+    }
 }

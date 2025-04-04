@@ -22,6 +22,7 @@ public class ConfirmOrderController {
         return runtimeService
                 .createProcessInstanceByKey(PROCESS_KEY)
                 .businessKey(UUID.randomUUID().toString())
+                .setVariable("id", orderDto.getId())
                 .setVariable("deliveryAddress", orderDto.getDeliveryAddress())
                 .setVariable("inn", orderDto.getCustomerInn())
                 .setVariable("accountNumber", orderDto.getCustomerAccountNumber())

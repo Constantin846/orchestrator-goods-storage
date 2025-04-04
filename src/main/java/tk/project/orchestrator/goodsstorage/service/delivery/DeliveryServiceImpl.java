@@ -1,4 +1,4 @@
-package tk.project.orchestrator.goodsstorage.service.agreement;
+package tk.project.orchestrator.goodsstorage.service.delivery;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,47 +8,50 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
-import tk.project.orchestrator.goodsstorage.dto.AgreementDataDto;
+import tk.project.orchestrator.goodsstorage.dto.delivery.DeliveryDateDto;
+import tk.project.orchestrator.goodsstorage.dto.delivery.SendCreateDeliveryDto;
 
 import java.time.Duration;
+import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Service
-@ConditionalOnMissingBean(AgreementServiceMock.class)
-public class AgreementServiceImpl implements AgreementService {
+@ConditionalOnMissingBean(DeliveryServiceMock.class)
+public class DeliveryServiceImpl implements DeliveryService {
     private static final int RETRY_COUNT = 2;
-    private final String uriCreateAgreement;
-    private final String uriDeleteAgreement;
+    private final String uriCreateDelivery;
+    private final String uriDeleteDelivery;
     private final long timeout;
     private final WebClient webClient;
 
-    public AgreementServiceImpl(
-            @Value("${agreement-service.method.create-agreement}")
-            String uriCreateAgreement,
-            @Value("${agreement-service.method.delete-agreement}")
-            String uriDeleteAgreement,
-            @Value("${agreement-service.timeout}")
+    public DeliveryServiceImpl(
+            @Value("${delivery-service.method.create}")
+            String uriCreateDelivery,
+            @Value("${delivery-service.method.delete}")
+            String uriDeleteDelivery,
+            @Value("${delivery-service.timeout}")
             long timeout,
             @Autowired
-            @Qualifier("agreementWebClient")
+            @Qualifier("deliveryWebClient")
             WebClient webClient
     ) {
-        this.uriCreateAgreement = uriCreateAgreement;
-        this.uriDeleteAgreement = uriDeleteAgreement + "/";
+        this.uriCreateDelivery = uriCreateDelivery;
+        this.uriDeleteDelivery = uriDeleteDelivery;
         this.timeout = timeout;
         this.webClient = webClient;
     }
 
     @Override
-    public String sendRequestCreateAgreement(AgreementDataDto agreementData) {
+    public DeliveryDateDto sendRequestCreateDelivery(SendCreateDeliveryDto deliveryDto) {
         return webClient.post()
-                .uri(uriCreateAgreement)
-                .bodyValue(agreementData)
+                .uri(uriCreateDelivery)
+                .bodyValue(deliveryDto)
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(DeliveryDateDto.class)
                 .retryWhen(Retry.fixedDelay(RETRY_COUNT, Duration.ofMillis(timeout)))
                 .doOnError(error -> {
-                    String message = "Something went wrong while executing request to create agreement";
+                    String message = "Something went wrong while executing request to create delivery";
                     log.warn(message);
                     throw new RuntimeException(message, error);
                 })
@@ -56,14 +59,14 @@ public class AgreementServiceImpl implements AgreementService {
     }
 
     @Override
-    public void sendRequestDeleteAgreement(String agreementId) {
+    public void sendRequestDeleteDelivery(UUID orderId) {
         webClient.delete()
-                .uri(uriDeleteAgreement + agreementId)
+                .uri(uriDeleteDelivery, Map.of("orderId", orderId))
                 .retrieve()
                 .bodyToMono(String.class)
                 .retryWhen(Retry.fixedDelay(RETRY_COUNT, Duration.ofMillis(timeout)))
                 .doOnError(error -> {
-                    String message = "Something went wrong while executing request to delete agreement";
+                    String message = "Something went wrong while executing request to delete delivery";
                     log.warn(message);
                     throw new RuntimeException(message, error);
                 })
