@@ -45,6 +45,6 @@ public class KafkaProducerConfig {
 
     @Bean
     public NewTopic orderCommandTopic() {
-        return new NewTopic(/*"brokerage-confirm-order"*/ "test-topic", 2, (short) 1);
+        return new NewTopic("orchestrator-topic", 2, (short) 1);
     }
 }

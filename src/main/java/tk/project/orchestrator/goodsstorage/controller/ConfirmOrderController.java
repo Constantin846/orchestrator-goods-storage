@@ -1,6 +1,7 @@
 package tk.project.orchestrator.goodsstorage.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,7 @@ import tk.project.orchestrator.goodsstorage.dto.OrchestratorConfirmOrderDto;
 
 import java.util.UUID;
 
+@Slf4j
 @RestController("/confirm-order")
 @RequiredArgsConstructor
 public class ConfirmOrderController {
@@ -19,6 +21,7 @@ public class ConfirmOrderController {
 
     @PostMapping
     public String confirmOrder(@RequestBody OrchestratorConfirmOrderDto orderDto) {
+        log.info("Request to confirm order with id: {}", orderDto.getId());
         return runtimeService
                 .createProcessInstanceByKey(PROCESS_KEY)
                 .businessKey(UUID.randomUUID().toString())
@@ -34,6 +37,7 @@ public class ConfirmOrderController {
 
     @PostMapping("continue")
     public void messageFromCompliance(@RequestParam UUID processId, @RequestParam ComplianceStatus status) {
+        log.info("Continue after message from compliance with status: {}", status);
         runtimeService
                 .createMessageCorrelation("continueProcessMsg")
                 .processInstanceBusinessKey(processId.toString())
