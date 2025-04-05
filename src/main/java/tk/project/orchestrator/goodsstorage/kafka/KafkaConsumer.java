@@ -27,8 +27,7 @@ public class KafkaConsumer {
             final ComplianceResultDto complianceResult = objectMapper.readValue(message, ComplianceResultDto.class);
             log.info("ComplianceResultDto: {}", complianceResult);
 
-            confirmOrderController.messageFromCompliance(
-                    complianceResult.getBusinessKey(), complianceResult.getComplianceStatus());
+            confirmOrderController.messageFromCompliance(complianceResult);
 
         } catch (JsonProcessingException e) {
             String msg = String.format("Couldn't parse message: %s; exception: %s", message, e);

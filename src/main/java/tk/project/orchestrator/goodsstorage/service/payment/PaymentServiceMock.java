@@ -13,6 +13,7 @@ public class PaymentServiceMock implements PaymentService {
 
     @Override
     public PaymentResultDto sendRequestPayOrder(PayOrderDto payOrderDto) {
+        log.info("PaymentServiceMock send request pay order");
         return new PaymentResultDto(true);
     }
 }

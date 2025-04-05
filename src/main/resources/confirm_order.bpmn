@@ -17,7 +17,7 @@
       <bpmn:incoming>Flow_19nbr0p</bpmn:incoming>
       <bpmn:outgoing>Flow_0h6657m</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:intermediateCatchEvent id="Event_0cdymfb">
+    <bpmn:intermediateCatchEvent id="Event_0cdymfb" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_0h6657m</bpmn:incoming>
       <bpmn:outgoing>Flow_0c8baya</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1upmbdk" messageRef="Message_2miml2b" />
@@ -57,7 +57,7 @@
     <bpmn:sequenceFlow id="Flow_0h6657m" sourceRef="Activity_0pn9cos" targetRef="Event_0cdymfb" />
     <bpmn:sequenceFlow id="Flow_0c8baya" sourceRef="Event_0cdymfb" targetRef="Gateway_0df75s3" />
     <bpmn:sequenceFlow id="Flow_10rkkqk" sourceRef="Gateway_0df75s3" targetRef="Gateway_1lwlt3k">
-      <bpmn:documentation>${complianceStatus == 'FAILED'}</bpmn:documentation>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${complianceStatus == 'FAILED'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_08ztxmy" sourceRef="Gateway_0df75s3" targetRef="Activity_0bkhepj" />
     <bpmn:sequenceFlow id="Flow_00odlgh" sourceRef="Gateway_1lwlt3k" targetRef="Activity_1r2ukg7" />
@@ -78,7 +78,7 @@
     </bpmn:boundaryEvent>
     <bpmn:task id="Activity_1s8a61x" name="Отмена доставки" isForCompensation="true" />
     <bpmn:sequenceFlow id="Flow_0jnp5yz" sourceRef="Activity_PayForOrder" targetRef="Gateway_175ff66" />
-    <bpmn:inclusiveGateway id="Gateway_175ff66">
+    <bpmn:inclusiveGateway id="Gateway_175ff66" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_0jnp5yz</bpmn:incoming>
       <bpmn:outgoing>Flow_0zr2qda</bpmn:outgoing>
       <bpmn:outgoing>Flow_1m2t83x</bpmn:outgoing>
@@ -94,10 +94,10 @@
       <bpmn:incoming>Flow_0zr2qda</bpmn:incoming>
     </bpmn:serviceTask>
     <bpmn:subProcess id="Activity_1x7nzz6" triggeredByEvent="true">
-      <bpmn:scriptTask id="Activity_093cnlf" name="Set ErroeFlag" scriptFormat="groovy">
+      <bpmn:scriptTask id="Activity_093cnlf" name="Set ErroeFlag" camunda:asyncBefore="true" scriptFormat="groovy">
         <bpmn:incoming>Flow_0b2urg4</bpmn:incoming>
         <bpmn:outgoing>Flow_1dimagj</bpmn:outgoing>
-        <bpmn:script>execution.setVariable('error',true)</bpmn:script>
+        <bpmn:script>execution.setVariable('errorFlag',true)</bpmn:script>
       </bpmn:scriptTask>
       <bpmn:intermediateThrowEvent id="Event_1z124yi">
         <bpmn:incoming>Flow_0bsq7g0</bpmn:incoming>

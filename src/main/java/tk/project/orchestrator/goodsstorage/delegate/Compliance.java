@@ -16,13 +16,13 @@ public class Compliance implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        log.info("Send to compliance, business key: {}", delegateExecution.getBusinessKey());
+        log.info("Send request to compliance, business key: {}", delegateExecution.getBusinessKey());
 
         ComplianceDto complianceDto = new ComplianceDto();
         complianceDto.setLogin((String) delegateExecution.getVariable("login"));
         complianceDto.setInn((String) delegateExecution.getVariable("inn"));
         complianceDto.setBusinessKey(delegateExecution.getBusinessKey());
 
-        kafkaProducer.sendMessage(KafkaProducer.CLAIM_TOPIC, complianceDto.getBusinessKey(), complianceDto);
+        kafkaProducer.sendMessage(kafkaProducer.getClaimTopic(), complianceDto.getBusinessKey(), complianceDto);
     }
 }

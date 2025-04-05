@@ -1,5 +1,5 @@
 server:
-  servlet.context-path: /or-gs
+  servlet.context-path: /orc-gs
   port: ${SERVER_PORT:8089}
 
 spring:
@@ -19,14 +19,14 @@ spring:
 app:
   orchestrator-id: 123
   kafka:
-    enabled: true
+    enabled: false
     bootstrapAddress: ${KAFKA_BOOTSTRAP_ADDRESS:http://localhost:9091}
     groupId: orchestrator-goods-storage
   agreement-service.type: mock
   delivery-service.type: mock
   notification-service.type: mock
   payment-service.type: mock
-  product-service.type: no-mock
+  product-service.type: mock
 
 
 agreement-service:

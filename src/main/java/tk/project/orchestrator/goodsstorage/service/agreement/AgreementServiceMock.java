@@ -13,11 +13,13 @@ import java.util.Objects;
 public class AgreementServiceMock implements AgreementService {
     @Override
     public String sendRequestCreateAgreement(AgreementDataDto agreementData) {
+        log.info("AgreementServiceMock send request to create agreement");
         int number = Objects.hash(agreementData.getInn(), agreementData.getAccountNumber());
         return Integer.toString(number);
     }
 
     @Override
     public void sendRequestDeleteAgreement(String agreementId) {
+        log.info("AgreementServiceMock send request to delete agreement");
     }
 }

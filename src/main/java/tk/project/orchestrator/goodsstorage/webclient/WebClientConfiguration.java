@@ -40,21 +40,21 @@ public class WebClientConfiguration {
     }
 
     @Bean
-    public WebClient paymentWebClient(@Value("${payment-goods-storage.host}") String baseUrl,
-                                      @Value("${payment-goods-storage.timeout}") Integer timeout) {
+    public WebClient paymentWebClient(@Value("${payment-service.host}") String baseUrl,
+                                      @Value("${payment-service.timeout}") Integer timeout) {
         timeout = Objects.isNull(timeout) ? TIMEOUT : timeout;
         return webClientWithTimeout(baseUrl, timeout);
     }
 
     @Bean
-    public WebClient productWebClient(@Value("${product-goods-storage.host}") String baseUrl,
-                                      @Value("${product-goods-storage.timeout}") Integer timeout) {
+    public WebClient productWebClient(@Value("${product-service.host}") String baseUrl,
+                                      @Value("${product-service.timeout}") Integer timeout) {
         timeout = Objects.isNull(timeout) ? TIMEOUT : timeout;
         return webClientWithTimeout(baseUrl, timeout);
     }
 
     private WebClient webClientWithTimeout(String baseUrl, Integer timeout) {
-        final var tcpClient = TcpClient
+        final TcpClient tcpClient = TcpClient
                 .create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, timeout)
                 .doOnConnected(connection -> {

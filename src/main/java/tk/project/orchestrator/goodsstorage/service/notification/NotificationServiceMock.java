@@ -12,5 +12,6 @@ public class NotificationServiceMock implements NotificationService {
 
     @Override
     public void sendCustomerNotification(CustomerNotificationDto notificationDto) {
+        log.info("NotificationServiceMock send customer notification");
     }
 }

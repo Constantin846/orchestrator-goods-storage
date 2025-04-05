@@ -3,7 +3,8 @@ package tk.project.orchestrator.goodsstorage.dto.delivery;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.LocalDate;
+
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor

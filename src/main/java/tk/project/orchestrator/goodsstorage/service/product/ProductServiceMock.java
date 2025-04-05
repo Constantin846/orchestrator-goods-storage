@@ -12,6 +12,7 @@ public class ProductServiceMock implements ProductService {
 
     @Override
     public String sendRequestSetOrderStatus(SetOrderStatusDto orderStatusDto) {
+        log.info("ProductServiceMock send request set order status");
         return "ok";
     }
 }
