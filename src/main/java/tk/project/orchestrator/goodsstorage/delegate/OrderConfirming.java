@@ -6,7 +6,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 import tk.project.orchestrator.goodsstorage.dto.product.OrderStatus;
-import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusDto;
+import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusRequest;
 import tk.project.orchestrator.goodsstorage.service.product.ProductService;
 
 import java.time.LocalDate;
@@ -22,7 +22,7 @@ public class OrderConfirming implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
         log.info("Change order status, business key: {}", delegateExecution.getBusinessKey());
 
-        SetOrderStatusDto orderStatusDto = new SetOrderStatusDto();
+        SetOrderStatusRequest orderStatusDto = new SetOrderStatusRequest();
         orderStatusDto.setOrderId((UUID) delegateExecution.getVariable("id"));
 
         if ((Boolean) delegateExecution.getVariable("errorFlag")) {

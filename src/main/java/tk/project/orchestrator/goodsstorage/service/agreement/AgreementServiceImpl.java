@@ -46,7 +46,6 @@ public class AgreementServiceImpl implements AgreementService {
                 .bodyValue(agreementData)
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.fixedDelay(RETRY_COUNT, Duration.ofMillis(timeout)))
                 .doOnError(error -> {
                     String message = "Something went wrong while executing request to create agreement";
                     log.warn(message);

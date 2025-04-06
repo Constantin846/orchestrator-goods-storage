@@ -1,7 +1,8 @@
 package tk.project.orchestrator.goodsstorage.service.product;
 
-import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusDto;
+import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusRequest;
+import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusResponse;
 
 public interface ProductService {
-    String sendRequestSetOrderStatus(SetOrderStatusDto orderStatusDto);
+    SetOrderStatusResponse sendRequestSetOrderStatus(SetOrderStatusRequest orderStatusDto);
 }

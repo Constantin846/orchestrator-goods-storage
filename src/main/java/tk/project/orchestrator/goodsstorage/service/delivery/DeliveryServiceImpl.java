@@ -49,7 +49,6 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .bodyValue(deliveryDto)
                 .retrieve()
                 .bodyToMono(DeliveryDateDto.class)
-                .retryWhen(Retry.fixedDelay(RETRY_COUNT, Duration.ofMillis(timeout)))
                 .doOnError(error -> {
                     String message = "Something went wrong while executing request to create delivery";
                     log.warn(message);

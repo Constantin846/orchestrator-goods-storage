@@ -8,7 +8,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
-import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusDto;
+import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusRequest;
+import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusResponse;
 
 import java.time.Duration;
 
@@ -40,13 +41,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String sendRequestSetOrderStatus(SetOrderStatusDto orderStatusDto) {
+    public SetOrderStatusResponse sendRequestSetOrderStatus(SetOrderStatusRequest orderStatusDto) {
         return webClient.patch()
                 .uri(uriSetOrderStatus)
                 .header("X_Orchestrator_ID", orchestratorId)
                 .bodyValue(orderStatusDto)
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(SetOrderStatusResponse.class)
                 .retryWhen(Retry.fixedDelay(RETRY_COUNT, Duration.ofMillis(timeout)))
                 .doOnError(error -> {
                     String message = "Something went wrong while executing request to set order status";

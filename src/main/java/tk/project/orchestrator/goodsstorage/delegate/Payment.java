@@ -23,6 +23,11 @@ public class Payment implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
         log.info("Pay for order, business key: {}", delegateExecution.getBusinessKey());
 
+        if ((Boolean) delegateExecution.getVariable("errorFlag")) {
+            log.info("Pay for order was cancelled, errorFlag is true");
+            return;
+        }
+
         try {
             PayOrderDto payOrderDto = new PayOrderDto();
             payOrderDto.setOrderId((UUID) delegateExecution.getVariable("id"));
