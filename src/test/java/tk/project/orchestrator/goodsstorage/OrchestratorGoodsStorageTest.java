@@ -8,7 +8,6 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import jakarta.ws.rs.core.MediaType;
 import lombok.SneakyThrows;
 import org.awaitility.Awaitility;
-import org.camunda.bpm.engine.RuntimeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,6 @@ import tk.project.orchestrator.goodsstorage.dto.payment.PaymentResultDto;
 import tk.project.orchestrator.goodsstorage.dto.product.OrderStatus;
 import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusRequest;
 import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusResponse;
-import tk.project.orchestrator.goodsstorage.service.agreement.AgreementServiceImpl;
-import tk.project.orchestrator.goodsstorage.service.product.ProductServiceImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -50,12 +47,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WireMockTest
 class OrchestratorGoodsStorageTest {
-    @Autowired
-    private RuntimeService runtimeService;
-    @Autowired
-    private AgreementServiceImpl agreementService;
-    @Autowired
-    private ProductServiceImpl productService;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -102,7 +93,7 @@ class OrchestratorGoodsStorageTest {
 
 
         ComplianceResultDto complianceResultDto = createComplianceResultDto(businessKey);
-        String resultContinue = mockMvc.perform(post("/confirm-order/continue")
+        mockMvc.perform(post("/confirm-order/continue")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(complianceResultDto)))
                 .andExpect(status().isOk())
@@ -143,7 +134,6 @@ class OrchestratorGoodsStorageTest {
                                 .withHeader("Content-Type", MediaType.APPLICATION_JSON)
                                 .withBody(objectMapper.writeValueAsString(orderStatusResponse)))
         );
-
     }
 
     @SneakyThrows
