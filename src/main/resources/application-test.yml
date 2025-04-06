@@ -1,0 +1,28 @@
+server:
+  servlet.context-path: /orc-gs
+  port: 8089
+
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:gs;LOCK_TIMEOUT=60000
+    username: gs
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate.ddl-auto: validate #create, update, none and validate
+  database-platform: org.hibernate.dialect.H2Dialect
+  h2.console.enabled: true #http://localhost:8089/orc-gs/h2-console
+
+
+app:
+  orchestrator-id: 123
+  kafka:
+    enabled: false
+    bootstrapAddress: ${KAFKA_BOOTSTRAP_ADDRESS:http://localhost:9091}
+    groupId: orchestrator-goods-storage
+  agreement-service.type: no-mock
+  delivery-service.type: no-mock
+  notification-service.type: no-mock
+  payment-service.type: no-mock
+  product-service.type: no-mock
