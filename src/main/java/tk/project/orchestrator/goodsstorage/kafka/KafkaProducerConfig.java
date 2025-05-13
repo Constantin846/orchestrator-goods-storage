@@ -21,11 +21,11 @@ import java.util.Map;
 @ConditionalOnProperty(prefix = "app", name = "kafka.enabled", matchIfMissing = false)
 public class KafkaProducerConfig {
     @Value("${app.kafka.bootstrapAddress}")
-    private String SERVER;
+    private String server;
 
     private ProducerFactory<String, byte[]> producerFactoryByteArray() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, SERVER);
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
@@ -39,7 +39,7 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();
-        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, SERVER);
+        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         return new KafkaAdmin(configs);
     }
 

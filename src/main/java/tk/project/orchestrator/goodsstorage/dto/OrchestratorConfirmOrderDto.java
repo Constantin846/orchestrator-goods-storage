@@ -1,22 +1,28 @@
 package tk.project.orchestrator.goodsstorage.dto;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Data
+@Getter
+@Builder
+@ToString
+@EqualsAndHashCode
 public class OrchestratorConfirmOrderDto {
 
-    private UUID id;
+    private final UUID id;
 
-    private String deliveryAddress;
+    private final String deliveryAddress;
 
-    private String customerInn;
+    private final String customerInn;
 
-    private String customerAccountNumber;
+    private final String customerAccountNumber;
 
-    private BigDecimal price;
+    private final BigDecimal price;
 
-    private String customerLogin;
+    private final String customerLogin;
 }

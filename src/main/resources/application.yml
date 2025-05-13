@@ -22,11 +22,11 @@ app:
     enabled: false
     bootstrapAddress: ${KAFKA_BOOTSTRAP_ADDRESS:http://localhost:9091}
     groupId: orchestrator-goods-storage
-  agreement-service.type: mock
-  delivery-service.type: mock
-  notification-service.type: mock
-  payment-service.type: mock
-  product-service.type: mock
+  agreement-client.type: mock
+  delivery-client.type: mock
+  notification-client.type: mock
+  payment-client.type: mock
+  product-client.type: no-mock
 
 
 agreement-service:

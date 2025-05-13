@@ -1,5 +1,6 @@
 package tk.project.orchestrator.goodsstorage.service.payment;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,24 +13,26 @@ import tk.project.orchestrator.goodsstorage.dto.payment.PaymentResultDto;
 
 @Slf4j
 @Service
-@ConditionalOnMissingBean(PaymentServiceMock.class)
-public class PaymentServiceImpl implements PaymentService {
+@ConditionalOnMissingBean(PaymentClientMock.class)
+public class PaymentClientImpl implements PaymentClient {
     private final String uriPayForOrder;
     private final WebClient webClient;
+    private final ObjectMapper objectMapper;
 
-    public PaymentServiceImpl(
+    public PaymentClientImpl(
             @Value("${payment-service.method.pay-for-order}")
-            String uriPayForOrder,
+            final String uriPayForOrder,
             @Autowired
             @Qualifier("paymentWebClient")
-            WebClient webClient
+            final WebClient webClient
     ) {
         this.uriPayForOrder = uriPayForOrder;
         this.webClient = webClient;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
-    public PaymentResultDto sendRequestPayOrder(PayOrderDto payOrderDto) {
+    public PaymentResultDto sendRequestPayOrder(final PayOrderDto payOrderDto) {
         return webClient.post()
                 .uri(uriPayForOrder)
                 .bodyValue(payOrderDto)

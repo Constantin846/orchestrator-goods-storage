@@ -1,16 +1,22 @@
 package tk.project.orchestrator.goodsstorage.dto.payment;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Data
+@Getter
+@Builder
+@ToString
+@EqualsAndHashCode
 public class PayOrderDto {
 
-    private UUID orderId;
+    private final UUID orderId;
 
-    private BigDecimal price;
+    private final BigDecimal price;
 
-    private String accountNumber;
+    private final String accountNumber;
 }

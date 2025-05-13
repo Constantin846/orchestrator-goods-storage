@@ -15,24 +15,24 @@ import java.time.Duration;
 
 @Slf4j
 @Service
-@ConditionalOnMissingBean(ProductServiceMock.class)
-public class ProductServiceImpl implements ProductService {
+@ConditionalOnMissingBean(ProductClientMock.class)
+public class ProductClientImpl implements ProductClient {
     private static final int RETRY_COUNT = 2;
     private final String orchestratorId;
     private final String uriSetOrderStatus;
     private final long timeout;
     private final WebClient webClient;
 
-    public ProductServiceImpl(
+    public ProductClientImpl(
             @Value("${app.orchestrator-id}")
-            String orchestratorId,
+            final String orchestratorId,
             @Value("${product-service.method.set-status}")
-            String uriSetOrderStatus,
+            final String uriSetOrderStatus,
             @Value("${product-service.timeout}")
-            long timeout,
+            final long timeout,
             @Autowired
             @Qualifier("productWebClient")
-            WebClient webClient
+            final WebClient webClient
     ) {
         this.orchestratorId = orchestratorId;
         this.uriSetOrderStatus = uriSetOrderStatus;
@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public SetOrderStatusResponse sendRequestSetOrderStatus(SetOrderStatusRequest orderStatusDto) {
+    public SetOrderStatusResponse sendRequestSetOrderStatus(final SetOrderStatusRequest orderStatusDto) {
         return webClient.patch()
                 .uri(uriSetOrderStatus)
                 .header("X_Orchestrator_ID", orchestratorId)

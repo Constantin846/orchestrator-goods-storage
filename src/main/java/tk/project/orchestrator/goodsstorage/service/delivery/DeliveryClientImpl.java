@@ -1,5 +1,6 @@
 package tk.project.orchestrator.goodsstorage.service.delivery;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,33 +18,35 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-@ConditionalOnMissingBean(DeliveryServiceMock.class)
-public class DeliveryServiceImpl implements DeliveryService {
+@ConditionalOnMissingBean(DeliveryClientMock.class)
+public class DeliveryClientImpl implements DeliveryClient {
     private static final int RETRY_COUNT = 2;
     private final String uriCreateDelivery;
     private final String uriDeleteDelivery;
     private final long timeout;
     private final WebClient webClient;
+    private final ObjectMapper objectMapper;
 
-    public DeliveryServiceImpl(
+    public DeliveryClientImpl(
             @Value("${delivery-service.method.create}")
-            String uriCreateDelivery,
+            final String uriCreateDelivery,
             @Value("${delivery-service.method.delete}")
-            String uriDeleteDelivery,
+            final String uriDeleteDelivery,
             @Value("${delivery-service.timeout}")
-            long timeout,
+            final long timeout,
             @Autowired
             @Qualifier("deliveryWebClient")
-            WebClient webClient
+            final WebClient webClient
     ) {
         this.uriCreateDelivery = uriCreateDelivery;
         this.uriDeleteDelivery = uriDeleteDelivery;
         this.timeout = timeout;
         this.webClient = webClient;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
-    public DeliveryDateDto sendRequestCreateDelivery(SendCreateDeliveryDto deliveryDto) {
+    public DeliveryDateDto sendRequestCreateDelivery(final SendCreateDeliveryDto deliveryDto) {
         return webClient.post()
                 .uri(uriCreateDelivery)
                 .bodyValue(deliveryDto)
@@ -58,7 +61,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public void sendRequestDeleteDelivery(UUID orderId) {
+    public void sendRequestDeleteDelivery(final UUID orderId) {
         webClient.delete()
                 .uri(uriDeleteDelivery, Map.of("orderId", orderId))
                 .retrieve()

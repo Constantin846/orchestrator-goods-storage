@@ -4,10 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-import tk.project.orchestrator.goodsstorage.dto.product.OrderStatus;
 import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusRequest;
-import tk.project.orchestrator.goodsstorage.service.product.ProductService;
+import tk.project.orchestrator.goodsstorage.enums.OrderStatus;
+import tk.project.orchestrator.goodsstorage.service.product.ProductClient;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -16,21 +17,37 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class OrderConfirming implements JavaDelegate {
-    private final ProductService productService;
+    private final ProductClient productClient;
 
     @Override
-    public void execute(DelegateExecution delegateExecution) throws Exception {
+    public void execute(final DelegateExecution delegateExecution) throws Exception {
         log.info("Change order status, business key: {}", delegateExecution.getBusinessKey());
 
-        SetOrderStatusRequest orderStatusDto = new SetOrderStatusRequest();
-        orderStatusDto.setOrderId((UUID) delegateExecution.getVariable("id"));
+        SetOrderStatusRequest orderStatusDto;
 
         if ((Boolean) delegateExecution.getVariable("errorFlag")) {
-           orderStatusDto.setStatus(OrderStatus.REJECTED);
+            orderStatusDto = buildSetOrderStatusRequest(
+                    (UUID) delegateExecution.getVariable("id"),
+                    OrderStatus.REJECTED,
+                    null
+            );
         } else {
-            orderStatusDto.setStatus(OrderStatus.CONFIRMED);
-            orderStatusDto.setDeliveryDate((LocalDate) delegateExecution.getVariable("deliveryDate"));
+            orderStatusDto = buildSetOrderStatusRequest(
+                    (UUID) delegateExecution.getVariable("id"),
+                    OrderStatus.CONFIRMED,
+                    (LocalDate) delegateExecution.getVariable("deliveryDate")
+            );
         }
-        productService.sendRequestSetOrderStatus(orderStatusDto);
+        productClient.sendRequestSetOrderStatus(orderStatusDto);
+    }
+
+    private SetOrderStatusRequest buildSetOrderStatusRequest(
+            final UUID orderId, final OrderStatus status, @Nullable final LocalDate deliveryDate
+    ) {
+        return SetOrderStatusRequest.builder()
+                .orderId(orderId)
+                .status(status)
+                .deliveryDate(deliveryDate)
+                .build();
     }
 }

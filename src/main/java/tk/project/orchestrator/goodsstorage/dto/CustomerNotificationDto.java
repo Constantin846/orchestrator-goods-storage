@@ -1,11 +1,17 @@
 package tk.project.orchestrator.goodsstorage.dto;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Builder
+@ToString
+@EqualsAndHashCode
 public class CustomerNotificationDto {
 
-    private String login;
+    private final String login;
 
-    private String message;
+    private final String message;
 }

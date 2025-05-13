@@ -1,9 +1,15 @@
 package tk.project.orchestrator.goodsstorage.dto.product;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Builder
+@ToString
+@EqualsAndHashCode
 public class SetOrderStatusResponse {
 
-    private String status;
+    private final String status;
 }

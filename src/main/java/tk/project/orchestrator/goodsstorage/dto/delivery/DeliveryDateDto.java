@@ -1,15 +1,24 @@
 package tk.project.orchestrator.goodsstorage.dto.delivery;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Builder
+@ToString
+@EqualsAndHashCode
 public class DeliveryDateDto {
 
-    private LocalDate date;
+    private final LocalDate date;
+
+    @JsonCreator
+    public DeliveryDateDto(@JsonProperty("date") final LocalDate date) {
+        this.date = date;
+    }
 }

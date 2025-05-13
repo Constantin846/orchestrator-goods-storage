@@ -20,13 +20,13 @@ import java.util.Map;
 @ConditionalOnProperty(prefix = "app", name = "kafka.enabled", matchIfMissing = false)
 public class KafkaConsumerConfig {
     @Value("${app.kafka.bootstrapAddress}")
-    private String SERVER;
+    private String server;
     @Value("${app.kafka.groupId}")
     private String groupId;
 
     private ConsumerFactory<String, String> consumerFactoryString() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, SERVER);
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);

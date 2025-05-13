@@ -1,4 +1,4 @@
-package tk.project.orchestrator.goodsstorage.dto;
+package tk.project.orchestrator.goodsstorage.enums;
 
 public enum ComplianceStatus {
     SUCCESS,

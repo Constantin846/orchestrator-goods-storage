@@ -9,17 +9,17 @@ import java.util.Objects;
 
 @Slf4j
 @Service
-@ConditionalOnExpression("'${app.agreement-service.type}'.equals('mock')")
-public class AgreementServiceMock implements AgreementService {
+@ConditionalOnExpression("'${app.agreement-client.type}'.equals('mock')")
+public class AgreementClientMock implements AgreementClient {
     @Override
-    public String sendRequestCreateAgreement(AgreementDataDto agreementData) {
+    public String sendRequestCreateAgreement(final AgreementDataDto agreementData) {
         log.info("AgreementServiceMock send request to create agreement");
-        int number = Objects.hash(agreementData.getInn(), agreementData.getAccountNumber());
+        final int number = Objects.hash(agreementData.getInn(), agreementData.getAccountNumber());
         return Integer.toString(number);
     }
 
     @Override
-    public void sendRequestDeleteAgreement(String agreementId) {
+    public void sendRequestDeleteAgreement(final String agreementId) {
         log.info("AgreementServiceMock send request to delete agreement");
     }
 }

@@ -1,13 +1,22 @@
 package tk.project.orchestrator.goodsstorage.dto.payment;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Builder
+@ToString
+@EqualsAndHashCode
 public class PaymentResultDto {
 
-    Boolean isSuccessful;
+    private final Boolean isSuccessful;
+
+    @JsonCreator
+    public PaymentResultDto(@JsonProperty("isSuccessful") final Boolean isSuccessful) {
+        this.isSuccessful = isSuccessful;
+    }
 }

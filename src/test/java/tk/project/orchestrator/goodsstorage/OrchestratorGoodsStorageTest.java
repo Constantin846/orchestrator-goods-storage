@@ -19,13 +19,13 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import tk.project.orchestrator.goodsstorage.dto.AgreementDataDto;
 import tk.project.orchestrator.goodsstorage.dto.ComplianceResultDto;
-import tk.project.orchestrator.goodsstorage.dto.ComplianceStatus;
 import tk.project.orchestrator.goodsstorage.dto.OrchestratorConfirmOrderDto;
 import tk.project.orchestrator.goodsstorage.dto.delivery.DeliveryDateDto;
 import tk.project.orchestrator.goodsstorage.dto.payment.PaymentResultDto;
-import tk.project.orchestrator.goodsstorage.dto.product.OrderStatus;
 import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusRequest;
 import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusResponse;
+import tk.project.orchestrator.goodsstorage.enums.ComplianceStatus;
+import tk.project.orchestrator.goodsstorage.enums.OrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -52,7 +52,7 @@ class OrchestratorGoodsStorageTest {
     @Autowired
     private ObjectMapper objectMapper;
     @RegisterExtension
-    private static WireMockExtension wireMockExtension = WireMockExtension.newInstance()
+    private static final WireMockExtension wireMockExtension = WireMockExtension.newInstance()
             .options(WireMockConfiguration.wireMockConfig().dynamicPort().dynamicPort())
             .build();
 
@@ -68,12 +68,12 @@ class OrchestratorGoodsStorageTest {
     @SneakyThrows
     @Test
     void confirmOrder() {
-        OrchestratorConfirmOrderDto orderDto = createOrchestratorConfirmOrderDto();
-        AgreementDataDto sendAgreementData = createAgreementDataDto(orderDto);
-        SetOrderStatusRequest orderStatusRequest = createSetOrderStatusRequest(orderDto);
+        final OrchestratorConfirmOrderDto orderDto = createOrchestratorConfirmOrderDto();
+        final AgreementDataDto sendAgreementData = createAgreementDataDto(orderDto);
+        final SetOrderStatusRequest orderStatusRequest = createSetOrderStatusRequest(orderDto);
         addWireMockExtensionStubs();
 
-        String result = mockMvc.perform(post("/confirm-order")
+        final String result = mockMvc.perform(post("/confirm-order")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(orderDto)))
                 .andExpect(status().isOk())
@@ -81,8 +81,8 @@ class OrchestratorGoodsStorageTest {
                 .getResponse()
                 .getContentAsString();
 
-        Map<String, String> mapBusinessKey = objectMapper.readValue(result, Map.class);
-        UUID businessKey = UUID.fromString(mapBusinessKey.get("businessKey"));
+        final Map<String, String> mapBusinessKey = objectMapper.readValue(result, Map.class);
+        final UUID businessKey = UUID.fromString(mapBusinessKey.get("businessKey"));
 
         Awaitility.await()
                 .atMost(10, TimeUnit.SECONDS)
@@ -92,7 +92,7 @@ class OrchestratorGoodsStorageTest {
                         .withRequestBody(equalToJson(objectMapper.writeValueAsString(sendAgreementData)))));
 
 
-        ComplianceResultDto complianceResultDto = createComplianceResultDto(businessKey);
+        final ComplianceResultDto complianceResultDto = createComplianceResultDto(businessKey);
         mockMvc.perform(post("/confirm-order/continue")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(complianceResultDto)))
@@ -116,18 +116,21 @@ class OrchestratorGoodsStorageTest {
 
         addWireMockExtensionStubPost("/agreement", "agreementId");
 
-        DeliveryDateDto deliveryDateDto = new DeliveryDateDto();
-        deliveryDateDto.setDate(deliveryDate);
+        final DeliveryDateDto deliveryDateDto = DeliveryDateDto.builder()
+                .date(deliveryDate)
+                .build();
         addWireMockExtensionStubPost("/delivery", deliveryDateDto);
 
         addWireMockExtensionStubPost("/send-message", "ok");
 
-        PaymentResultDto paymentResultDto = new PaymentResultDto();
-        paymentResultDto.setIsSuccessful(true);
+        final PaymentResultDto paymentResultDto = PaymentResultDto.builder()
+                .isSuccessful(true)
+                .build();
         addWireMockExtensionStubPost("/pay-for-order", paymentResultDto);
 
-        SetOrderStatusResponse orderStatusResponse = new SetOrderStatusResponse();
-        orderStatusResponse.setStatus(OrderStatus.CONFIRMED.toString());
+        final SetOrderStatusResponse orderStatusResponse = SetOrderStatusResponse.builder()
+                .status(OrderStatus.CONFIRMED.toString())
+                .build();
         wireMockExtension.stubFor(
                 WireMock.patch(urlMatching("/gs/order/set-status"))
                         .willReturn(aResponse()
@@ -137,7 +140,7 @@ class OrchestratorGoodsStorageTest {
     }
 
     @SneakyThrows
-    private void addWireMockExtensionStubPost(String url, Object responseBody) {
+    private void addWireMockExtensionStubPost(final String url, final Object responseBody) {
         wireMockExtension.stubFor(
                 WireMock.post(url)
                         .willReturn(aResponse()
@@ -147,35 +150,35 @@ class OrchestratorGoodsStorageTest {
     }
 
     private OrchestratorConfirmOrderDto createOrchestratorConfirmOrderDto() {
-        OrchestratorConfirmOrderDto orderDto = new OrchestratorConfirmOrderDto();
-        orderDto.setId(UUID.randomUUID());
-        orderDto.setDeliveryAddress("address");
-        orderDto.setCustomerInn("123456");
-        orderDto.setCustomerAccountNumber("12345678");
-        orderDto.setPrice(BigDecimal.valueOf(111.11));
-        orderDto.setCustomerLogin("login");
-        return orderDto;
+        return OrchestratorConfirmOrderDto.builder()
+                .id(UUID.randomUUID())
+                .deliveryAddress("address")
+                .customerInn("123456")
+                .customerAccountNumber("12345678")
+                .price(BigDecimal.valueOf(111.11))
+                .customerLogin("login")
+                .build();
     }
 
-    private AgreementDataDto createAgreementDataDto(OrchestratorConfirmOrderDto orderDto) {
-        AgreementDataDto agreementDataDto = new AgreementDataDto();
-        agreementDataDto.setInn(orderDto.getCustomerInn());
-        agreementDataDto.setAccountNumber(orderDto.getCustomerAccountNumber());
-        return agreementDataDto;
+    private AgreementDataDto createAgreementDataDto(final OrchestratorConfirmOrderDto orderDto) {
+        return AgreementDataDto.builder()
+                .inn(orderDto.getCustomerInn())
+                .accountNumber(orderDto.getCustomerAccountNumber())
+                .build();
     }
 
-    private SetOrderStatusRequest createSetOrderStatusRequest(OrchestratorConfirmOrderDto orderDto) {
-        SetOrderStatusRequest orderStatusRequest = new SetOrderStatusRequest();
-        orderStatusRequest.setOrderId(orderDto.getId());
-        orderStatusRequest.setStatus(OrderStatus.CONFIRMED);
-        orderStatusRequest.setDeliveryDate(deliveryDate);
-        return orderStatusRequest;
+    private SetOrderStatusRequest createSetOrderStatusRequest(final OrchestratorConfirmOrderDto orderDto) {
+        return SetOrderStatusRequest.builder()
+                .orderId(orderDto.getId())
+                .status(OrderStatus.CONFIRMED)
+                .deliveryDate(deliveryDate)
+                .build();
     }
 
     private ComplianceResultDto createComplianceResultDto(UUID businessKey) {
-        ComplianceResultDto complianceResultDto = new ComplianceResultDto();
-        complianceResultDto.setBusinessKey(businessKey);
-        complianceResultDto.setComplianceStatus(ComplianceStatus.SUCCESS);
-        return complianceResultDto;
+        return ComplianceResultDto.builder()
+                .businessKey(businessKey)
+                .complianceStatus(ComplianceStatus.SUCCESS)
+                .build();
     }
 }

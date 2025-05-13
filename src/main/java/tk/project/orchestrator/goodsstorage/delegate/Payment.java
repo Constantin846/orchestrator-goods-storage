@@ -8,7 +8,7 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 import tk.project.orchestrator.goodsstorage.dto.payment.PayOrderDto;
 import tk.project.orchestrator.goodsstorage.dto.payment.PaymentResultDto;
-import tk.project.orchestrator.goodsstorage.service.payment.PaymentService;
+import tk.project.orchestrator.goodsstorage.service.payment.PaymentClient;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -17,10 +17,10 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class Payment implements JavaDelegate {
-    private final PaymentService paymentService;
+    private final PaymentClient paymentClient;
 
     @Override
-    public void execute(DelegateExecution delegateExecution) throws Exception {
+    public void execute(final DelegateExecution delegateExecution) throws Exception {
         log.info("Pay for order, business key: {}", delegateExecution.getBusinessKey());
 
         if ((Boolean) delegateExecution.getVariable("errorFlag")) {
@@ -29,12 +29,13 @@ public class Payment implements JavaDelegate {
         }
 
         try {
-            PayOrderDto payOrderDto = new PayOrderDto();
-            payOrderDto.setOrderId((UUID) delegateExecution.getVariable("id"));
-            payOrderDto.setPrice((BigDecimal) delegateExecution.getVariable("price"));
-            payOrderDto.setAccountNumber((String) delegateExecution.getVariable("accountNumber"));
+            final PayOrderDto payOrderDto = PayOrderDto.builder()
+                    .orderId((UUID) delegateExecution.getVariable("id"))
+                    .price((BigDecimal) delegateExecution.getVariable("price"))
+                    .accountNumber((String) delegateExecution.getVariable("accountNumber"))
+                    .build();
 
-            PaymentResultDto paymentResult = paymentService.sendRequestPayOrder(payOrderDto);
+            final PaymentResultDto paymentResult = paymentClient.sendRequestPayOrder(payOrderDto);
 
             if (!paymentResult.getIsSuccessful()) {
                 throw new BpmnError("delegateCancelableError");
