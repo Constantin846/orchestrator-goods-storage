@@ -8,12 +8,14 @@ import tk.project.orchestrator.goodsstorage.dto.payment.PaymentResultDto;
 
 @Slf4j
 @Service
-@ConditionalOnExpression("'${app.payment-service.type}'.equals('mock')")
-public class PaymentServiceMock implements PaymentService {
+@ConditionalOnExpression("'${app.payment-client.type}'.equals('mock')")
+public class PaymentClientMock implements PaymentClient {
 
     @Override
-    public PaymentResultDto sendRequestPayOrder(PayOrderDto payOrderDto) {
+    public PaymentResultDto sendRequestPayOrder(final PayOrderDto payOrderDto) {
         log.info("PaymentServiceMock send request pay order");
-        return new PaymentResultDto(true);
+        return PaymentResultDto.builder()
+                .isSuccessful(true)
+                .build();
     }
 }

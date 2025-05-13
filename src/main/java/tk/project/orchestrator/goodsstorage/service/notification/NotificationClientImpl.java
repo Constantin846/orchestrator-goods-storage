@@ -14,21 +14,21 @@ import java.time.Duration;
 
 @Slf4j
 @Service
-@ConditionalOnMissingBean(NotificationServiceMock.class)
-public class NotificationServiceImpl implements NotificationService {
+@ConditionalOnMissingBean(NotificationClientMock.class)
+public class NotificationClientImpl implements NotificationClient {
     private static final int RETRY_COUNT = 2;
     private final String uriCreateCustomerNotification;
     private final long timeout;
     private final WebClient webClient;
 
-    public NotificationServiceImpl(
+    public NotificationClientImpl(
             @Value("${notification-service.method.send-message}")
-            String uriCreateCustomerNotification,
+            final String uriCreateCustomerNotification,
             @Value("${notification-service.timeout}")
-            long timeout,
+            final  long timeout,
             @Autowired
             @Qualifier("notificationWebClient")
-            WebClient webClient
+            final  WebClient webClient
     ) {
         this.uriCreateCustomerNotification = uriCreateCustomerNotification;
         this.timeout = timeout;
@@ -36,7 +36,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void sendCustomerNotification(CustomerNotificationDto notificationDto) {
+    public void sendCustomerNotification(final CustomerNotificationDto notificationDto) {
         webClient.post()
                 .uri(uriCreateCustomerNotification)
                 .bodyValue(notificationDto)

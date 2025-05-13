@@ -1,13 +1,19 @@
 package tk.project.orchestrator.goodsstorage.dto.delivery;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.util.UUID;
 
-@Data
+@Getter
+@Builder
+@ToString
+@EqualsAndHashCode
 public class SendCreateDeliveryDto {
 
-    private UUID orderId;
+    private final UUID orderId;
 
-    private String deliveryAddress;
+    private final String deliveryAddress;
 }

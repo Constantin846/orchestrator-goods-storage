@@ -1,11 +1,17 @@
 package tk.project.orchestrator.goodsstorage.dto;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Builder
+@ToString
+@EqualsAndHashCode
 public class AgreementDataDto {
 
-    private String inn;
+    private final String inn;
 
-    private String accountNumber;
+    private final String accountNumber;
 }

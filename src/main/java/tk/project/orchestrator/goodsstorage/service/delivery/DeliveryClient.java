@@ -5,8 +5,8 @@ import tk.project.orchestrator.goodsstorage.dto.delivery.SendCreateDeliveryDto;
 
 import java.util.UUID;
 
-public interface DeliveryService {
-    DeliveryDateDto sendRequestCreateDelivery(SendCreateDeliveryDto deliveryDto);
+public interface DeliveryClient {
+    DeliveryDateDto sendRequestCreateDelivery(final SendCreateDeliveryDto deliveryDto);
 
-    void sendRequestDeleteDelivery(UUID orderId);
+    void sendRequestDeleteDelivery(final UUID orderId);
 }

@@ -23,7 +23,7 @@ public class ConfirmOrderController {
     private final RuntimeService runtimeService;
 
     @PostMapping
-    public Map<String, String> confirmOrder(@RequestBody OrchestratorConfirmOrderDto orderDto) {
+    public Map<String, String> confirmOrder(@RequestBody final OrchestratorConfirmOrderDto orderDto) {
         log.info("Request to confirm order with id: {}", orderDto.getId());
         return Map.of(BUSINESS_KEY,
                 runtimeService
@@ -42,7 +42,7 @@ public class ConfirmOrderController {
     }
 
     @PostMapping("/continue")
-    public void messageFromCompliance(@RequestBody ComplianceResultDto complianceResultDto) {
+    public void messageFromCompliance(@RequestBody final ComplianceResultDto complianceResultDto) {
         log.info("Continue after message from compliance with status: {}", complianceResultDto);
         runtimeService
                 .createMessageCorrelation("continueProcessMsg")

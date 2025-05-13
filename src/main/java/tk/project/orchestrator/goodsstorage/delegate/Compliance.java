@@ -15,13 +15,14 @@ public class Compliance implements JavaDelegate {
     private final KafkaProducer kafkaProducer;
 
     @Override
-    public void execute(DelegateExecution delegateExecution) throws Exception {
+    public void execute(final DelegateExecution delegateExecution) throws Exception {
         log.info("Send request to compliance, business key: {}", delegateExecution.getBusinessKey());
 
-        ComplianceDto complianceDto = new ComplianceDto();
-        complianceDto.setLogin((String) delegateExecution.getVariable("login"));
-        complianceDto.setInn((String) delegateExecution.getVariable("inn"));
-        complianceDto.setBusinessKey(delegateExecution.getBusinessKey());
+        final ComplianceDto complianceDto = ComplianceDto.builder()
+                .login((String) delegateExecution.getVariable("login"))
+                .inn((String) delegateExecution.getVariable("inn"))
+                .businessKey(delegateExecution.getBusinessKey())
+                .build();
 
         kafkaProducer.sendMessage(kafkaProducer.getClaimTopic(), complianceDto.getBusinessKey(), complianceDto);
     }

@@ -1,13 +1,20 @@
 package tk.project.orchestrator.goodsstorage.dto;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import tk.project.orchestrator.goodsstorage.enums.ComplianceStatus;
 
 import java.util.UUID;
 
-@Data
+@Getter
+@Builder
+@ToString
+@EqualsAndHashCode
 public class ComplianceResultDto {
 
-    private UUID businessKey;
+    private final UUID businessKey;
 
-    private ComplianceStatus complianceStatus;
+    private final ComplianceStatus complianceStatus;
 }

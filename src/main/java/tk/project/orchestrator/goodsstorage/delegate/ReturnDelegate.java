@@ -12,7 +12,7 @@ public class ReturnDelegate implements JavaDelegate {
     private final RuntimeService runtimeService;
 
     @Override
-    public void execute(DelegateExecution delegateExecution) throws Exception {
+    public void execute(final DelegateExecution delegateExecution) throws Exception {
         runtimeService.createProcessInstanceModification(delegateExecution.getProcessInstanceId())
                 .startAfterActivity("Activity_PayForOrder")
                 .execute();

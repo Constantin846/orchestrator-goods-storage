@@ -6,23 +6,24 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 import tk.project.orchestrator.goodsstorage.dto.AgreementDataDto;
-import tk.project.orchestrator.goodsstorage.service.agreement.AgreementService;
+import tk.project.orchestrator.goodsstorage.service.agreement.AgreementClient;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class RegistrationAgreement implements JavaDelegate {
-    private final AgreementService agreementService;
+    private final AgreementClient agreementClient;
 
     @Override
-    public void execute(DelegateExecution delegateExecution) throws Exception {
+    public void execute(final DelegateExecution delegateExecution) throws Exception {
         log.info("Create agreement, business key: {}", delegateExecution.getBusinessKey());
 
-        AgreementDataDto agreementData = new AgreementDataDto();
-        agreementData.setInn((String) delegateExecution.getVariable("inn"));
-        agreementData.setAccountNumber((String) delegateExecution.getVariable("accountNumber"));
+        final AgreementDataDto agreementData = AgreementDataDto.builder()
+                .inn((String) delegateExecution.getVariable("inn"))
+                .accountNumber((String) delegateExecution.getVariable("accountNumber"))
+                .build();
 
-        String agreementId = agreementService.sendRequestCreateAgreement(agreementData);
+        final String agreementId = agreementClient.sendRequestCreateAgreement(agreementData);
         delegateExecution.setVariable("agreementId", agreementId);
     }
 }

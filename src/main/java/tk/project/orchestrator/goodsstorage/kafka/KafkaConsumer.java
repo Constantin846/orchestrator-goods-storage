@@ -19,7 +19,7 @@ public class KafkaConsumer {
     private final ConfirmOrderController confirmOrderController;
 
     @KafkaListener(topics = "brokerage-compliance-info", containerFactory = "kafkaListenerContainerFactoryString")
-    public void listen(String message) throws JsonProcessingException {
+    public void listen(final String message) throws JsonProcessingException {
         log.info("Receive message: {}", message);
         final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -30,7 +30,7 @@ public class KafkaConsumer {
             confirmOrderController.messageFromCompliance(complianceResult);
 
         } catch (JsonProcessingException e) {
-            String msg = String.format("Couldn't parse message: %s; exception: %s", message, e);
+            final String msg = String.format("Couldn't parse message: %s; exception: %s", message, e);
             log.warn(msg);
             throw new RuntimeException(msg);
         }

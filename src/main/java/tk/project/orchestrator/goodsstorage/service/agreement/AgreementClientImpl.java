@@ -14,24 +14,24 @@ import java.time.Duration;
 
 @Slf4j
 @Service
-@ConditionalOnMissingBean(AgreementServiceMock.class)
-public class AgreementServiceImpl implements AgreementService {
+@ConditionalOnMissingBean(AgreementClientMock.class)
+public class AgreementClientImpl implements AgreementClient {
     private static final int RETRY_COUNT = 2;
     private final String uriCreateAgreement;
     private final String uriDeleteAgreement;
     private final long timeout;
     private final WebClient webClient;
 
-    public AgreementServiceImpl(
+    public AgreementClientImpl(
             @Value("${agreement-service.method.create-agreement}")
-            String uriCreateAgreement,
+            final String uriCreateAgreement,
             @Value("${agreement-service.method.delete-agreement}")
-            String uriDeleteAgreement,
+            final String uriDeleteAgreement,
             @Value("${agreement-service.timeout}")
-            long timeout,
+            final long timeout,
             @Autowired
             @Qualifier("agreementWebClient")
-            WebClient webClient
+            final WebClient webClient
     ) {
         this.uriCreateAgreement = uriCreateAgreement;
         this.uriDeleteAgreement = uriDeleteAgreement + "/";
@@ -40,7 +40,7 @@ public class AgreementServiceImpl implements AgreementService {
     }
 
     @Override
-    public String sendRequestCreateAgreement(AgreementDataDto agreementData) {
+    public String sendRequestCreateAgreement(final AgreementDataDto agreementData) {
         return webClient.post()
                 .uri(uriCreateAgreement)
                 .bodyValue(agreementData)
@@ -55,7 +55,7 @@ public class AgreementServiceImpl implements AgreementService {
     }
 
     @Override
-    public void sendRequestDeleteAgreement(String agreementId) {
+    public void sendRequestDeleteAgreement(final String agreementId) {
         webClient.delete()
                 .uri(uriDeleteAgreement + agreementId)
                 .retrieve()

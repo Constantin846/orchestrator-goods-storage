@@ -7,11 +7,11 @@ import tk.project.orchestrator.goodsstorage.dto.CustomerNotificationDto;
 
 @Slf4j
 @Service
-@ConditionalOnExpression("'${app.notification-service.type}'.equals('mock')")
-public class NotificationServiceMock implements NotificationService {
+@ConditionalOnExpression("'${app.notification-client.type}'.equals('mock')")
+public class NotificationClientMock implements NotificationClient {
 
     @Override
-    public void sendCustomerNotification(CustomerNotificationDto notificationDto) {
+    public void sendCustomerNotification(final CustomerNotificationDto notificationDto) {
         log.info("NotificationServiceMock send customer notification");
     }
 }

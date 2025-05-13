@@ -43,10 +43,8 @@ public class KafkaProducerImpl implements KafkaProducer {
             throw new RuntimeException(e);
         }
 
-        byte[] data = jsonString.getBytes();
-
         try {
-            kafkaTemplateByteArray.send(topic, key, data).get(1L, TimeUnit.MINUTES);
+            kafkaTemplateByteArray.send(topic, key, jsonString.getBytes()).get(1L, TimeUnit.MINUTES);
             log.info("Kafka send complete");
 
         } catch (Exception e) {

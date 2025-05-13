@@ -6,25 +6,25 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 import tk.project.orchestrator.goodsstorage.dto.CustomerNotificationDto;
-import tk.project.orchestrator.goodsstorage.service.notification.NotificationService;
+import tk.project.orchestrator.goodsstorage.service.notification.NotificationClient;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class OrderRejectedCustomerNotificator implements JavaDelegate {
-    private final NotificationService notificationService;
+    private final NotificationClient notificationClient;
 
     @Override
-    public void execute(DelegateExecution delegateExecution) throws Exception {
+    public void execute(final DelegateExecution delegateExecution) throws Exception {
         log.info("Send notification to customer, business key: {}", delegateExecution.getBusinessKey());
 
-        CustomerNotificationDto dto = new CustomerNotificationDto();
-        dto.setLogin((String) delegateExecution.getVariable("login"));
-        dto.setMessage(String.format(
-                "Order with id=%s has been rejected",
-                delegateExecution.getVariable("id")
-        ));
+        final CustomerNotificationDto dto = CustomerNotificationDto.builder()
+                .login((String) delegateExecution.getVariable("login"))
+                .message(String.format(
+                        "Order with id=%s has been rejected",
+                        delegateExecution.getVariable("id"))
+                ).build();
 
-        notificationService.sendCustomerNotification(dto);
+        notificationClient.sendCustomerNotification(dto);
     }
 }

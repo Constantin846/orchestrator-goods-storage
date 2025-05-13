@@ -11,17 +11,19 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-@ConditionalOnExpression("'${app.delivery-service.type}'.equals('mock')")
-public class DeliveryServiceMock implements DeliveryService {
+@ConditionalOnExpression("'${app.delivery-client.type}'.equals('mock')")
+public class DeliveryClientMock implements DeliveryClient {
 
     @Override
-    public DeliveryDateDto sendRequestCreateDelivery(SendCreateDeliveryDto deliveryDto) {
+    public DeliveryDateDto sendRequestCreateDelivery(final SendCreateDeliveryDto deliveryDto) {
         log.info("DeliveryServiceMock send request to create delivery");
-        return new DeliveryDateDto(LocalDate.now().plusDays(3));
+        return DeliveryDateDto.builder()
+                .date(LocalDate.now().plusDays(3))
+                .build();
     }
 
     @Override
-    public void sendRequestDeleteDelivery(UUID orderId) {
+    public void sendRequestDeleteDelivery(final UUID orderId) {
         log.info("DeliveryServiceMock send request to delete delivery");
     }
 }
