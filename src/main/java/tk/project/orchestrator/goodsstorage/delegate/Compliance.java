@@ -24,6 +24,6 @@ public class Compliance implements JavaDelegate {
                 .businessKey(delegateExecution.getBusinessKey())
                 .build();
 
-        kafkaProducer.sendMessage(kafkaProducer.getClaimTopic(), complianceDto.getBusinessKey(), complianceDto);
+        kafkaProducer.sendMessage(kafkaProducer.getOrchestratorTopic(), complianceDto.getBusinessKey(), complianceDto);
     }
 }

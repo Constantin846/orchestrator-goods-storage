@@ -10,8 +10,13 @@ import org.springframework.stereotype.Service;
 public class KafkaProducerMock implements KafkaProducer {
 
     @Override
-    public String getClaimTopic() {
-        return "mock";
+    public String getOrchestratorTopic() {
+        return "orchestrator-topic-mock";
+    }
+
+    @Override
+    public String getComplianceInfoTopic() {
+        return "compliance-info-topic-mock";
     }
 
     @Override

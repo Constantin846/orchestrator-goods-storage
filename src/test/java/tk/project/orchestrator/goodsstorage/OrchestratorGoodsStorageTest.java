@@ -26,6 +26,7 @@ import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusRequest;
 import tk.project.orchestrator.goodsstorage.dto.product.SetOrderStatusResponse;
 import tk.project.orchestrator.goodsstorage.enums.ComplianceStatus;
 import tk.project.orchestrator.goodsstorage.enums.OrderStatus;
+import tk.project.orchestrator.goodsstorage.kafka.KafkaProducerImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -46,7 +47,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @WireMockTest
-class OrchestratorGoodsStorageTest {
+class OrchestratorGoodsStorageTest implements KafkaTestContainer {
+    @Autowired
+    private KafkaProducerImpl kafkaProducer;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -68,11 +71,13 @@ class OrchestratorGoodsStorageTest {
     @SneakyThrows
     @Test
     void confirmOrder() {
+        // GIVEN
         final OrchestratorConfirmOrderDto orderDto = createOrchestratorConfirmOrderDto();
         final AgreementDataDto sendAgreementData = createAgreementDataDto(orderDto);
         final SetOrderStatusRequest orderStatusRequest = createSetOrderStatusRequest(orderDto);
         addWireMockExtensionStubs();
 
+        // WHEN
         final String result = mockMvc.perform(post("/confirm-order")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(orderDto)))
@@ -84,6 +89,7 @@ class OrchestratorGoodsStorageTest {
         final Map<String, String> mapBusinessKey = objectMapper.readValue(result, Map.class);
         final UUID businessKey = UUID.fromString(mapBusinessKey.get("businessKey"));
 
+        // THEN
         Awaitility.await()
                 .atMost(10, TimeUnit.SECONDS)
                 .pollInterval(2, TimeUnit.SECONDS)
@@ -92,15 +98,11 @@ class OrchestratorGoodsStorageTest {
                         .withRequestBody(equalToJson(objectMapper.writeValueAsString(sendAgreementData)))));
 
 
+        // WHEN
         final ComplianceResultDto complianceResultDto = createComplianceResultDto(businessKey);
-        mockMvc.perform(post("/confirm-order/continue")
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(complianceResultDto)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+        kafkaProducer.sendMessage(kafkaProducer.getComplianceInfoTopic(), businessKey.toString(), complianceResultDto);
 
+        // THEN
         Awaitility.await()
                 .atMost(10, TimeUnit.SECONDS)
                 .pollInterval(2, TimeUnit.SECONDS)

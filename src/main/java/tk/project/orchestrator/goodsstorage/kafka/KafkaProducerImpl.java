@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -16,15 +17,23 @@ import java.util.concurrent.TimeUnit;
 @ConditionalOnProperty(prefix = "app", name = "kafka.enabled", matchIfMissing = false)
 public class KafkaProducerImpl implements KafkaProducer {
     private final KafkaTemplate<String, byte[]> kafkaTemplateByteArray;
-    public static final String CLAIM_TOPIC = "brokerage-claim";
+    @Value("${app.kafka.orchestrator-topic}")
+    private String orchestratorTopic;
+    @Value("${app.kafka.compliance-info-topic}")
+    public String complianceInfoTopic;
 
     public KafkaProducerImpl(@Autowired KafkaTemplate<String, byte[]> kafkaTemplateByteArray) {
         this.kafkaTemplateByteArray = kafkaTemplateByteArray;
     }
 
     @Override
-    public String getClaimTopic() {
-        return CLAIM_TOPIC;
+    public String getOrchestratorTopic() {
+        return orchestratorTopic;
+    }
+
+    @Override
+    public String getComplianceInfoTopic() {
+        return complianceInfoTopic;
     }
 
     @Override

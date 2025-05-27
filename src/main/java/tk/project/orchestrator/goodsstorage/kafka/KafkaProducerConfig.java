@@ -22,6 +22,10 @@ import java.util.Map;
 public class KafkaProducerConfig {
     @Value("${app.kafka.bootstrapAddress}")
     private String server;
+    @Value("${app.kafka.orchestrator-topic}")
+    private String orchestratorTopic;
+    @Value("${app.kafka.compliance-info-topic}")
+    private String complianceInfoTopicMock;
 
     private ProducerFactory<String, byte[]> producerFactoryByteArray() {
         Map<String, Object> configProps = new HashMap<>();
@@ -44,7 +48,12 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public NewTopic orderCommandTopic() {
-        return new NewTopic("orchestrator-topic", 2, (short) 1);
+    public NewTopic orchestratorTopic() {
+        return new NewTopic(orchestratorTopic, 2, (short) 1);
+    }
+
+    @Bean
+    public NewTopic complianceInfoTopicMock() {
+        return new NewTopic(complianceInfoTopicMock, 2, (short) 1);
     }
 }
