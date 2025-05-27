@@ -18,7 +18,7 @@ public class KafkaConsumer {
 
     private final ConfirmOrderController confirmOrderController;
 
-    @KafkaListener(topics = "brokerage-compliance-info", containerFactory = "kafkaListenerContainerFactoryString")
+    @KafkaListener(topics = "${app.kafka.compliance-info-topic}", containerFactory = "kafkaListenerContainerFactoryString")
     public void listen(final String message) throws JsonProcessingException {
         log.info("Receive message: {}", message);
         final ObjectMapper objectMapper = new ObjectMapper();
